@@ -1,0 +1,145 @@
+openapi: 3.1.0
+info:
+  title: Datamart API
+  version: "1.4"
+servers:
+  - url: https://chat-gdatabot.onrender.com
+security:
+  - BearerAuth: []
+paths:
+  /peoplecounting:
+    get:
+      operationId: getPeopleCounting
+      tags:
+        - Fluxos Mall
+      summary: Consultar dados de contagem de pessoas
+      parameters:
+        - name: start_date
+          in: query
+          required: false
+          description: Data inicial no formato AAAA-MM-DD
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: false
+          description: Data final no formato AAAA-MM-DD
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Lista de registros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PeopleCountingItem"
+
+  /parkingdata:
+    get:
+      operationId: getParkingData
+      tags:
+        - Fluxos Mall
+      summary: Consultar dados de estacionamento
+      security:
+        - TokenHeader: []
+      parameters:
+        - name: start_date
+          in: query
+          required: false
+          description: Data inicial no formato AAAA-MM-DD
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: false
+          description: Data final no formato AAAA-MM-DD
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          required: false
+          description: Máximo de registros a retornar
+          schema:
+            type: integer
+            default: 1000
+        - name: last_date
+          in: query
+          required: false
+          description: Data da última entrada
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Lista de registros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ParkingDataItem"
+
+  /hotspotaccess:
+    get:
+      operationId: getHotspotAccess
+      tags:
+        - Fluxos Mall
+      summary: Consultar dados de acesso via hotspot
+      security:
+        - TokenHeader: []
+      responses:
+        "200":
+          description: Lista de registros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HotspotAccessItem"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      in: bearer
+      bearerFormat: JWT
+
+  schemas:
+    PeopleCountingItem:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        count:
+          type: integer
+        location:
+          type: string
+
+    ParkingDataItem:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        plate:
+          type: string
+        zone:
+          type: string
+
+    HotspotAccessItem:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        mac_address:
+          type: string
+        device_type:
+          type: string
