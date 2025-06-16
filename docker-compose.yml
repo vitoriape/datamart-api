@@ -1,0 +1,9 @@
+services:
+  fabric-connector:
+    build: .
+    container_name: fabric-connector
+    env_file:
+      - secret.env
+    volumes:
+      - ./:/chat-gdatabot
+    command: python datamart-api.py

@@ -1,0 +1,8 @@
+msal
+sqlalchemy
+pyodbc
+pandas
+python-dotenv
+fastapi
+pydantic
+uvicorn
