@@ -4,8 +4,8 @@ PowerBI Datamart API for consumption via ChatGPT (Actions) and general clients
 <div align="center">
 
 ![version](https://img.shields.io/badge/version-1.4-red.svg)
-![status](https://img.shields.io/badge/status-stable-green.svg)
-![python](https://img.shields.io/badge/Python-3.11-informational.svg)
+![status](https://img.shields.io/badge/status-stable-006400.svg)
+![python](https://img.shields.io/badge/Python-3.10-navy.svg)
 ![fastapi](https://img.shields.io/badge/FastAPI-0.100.0-pink.svg)
 ![deploy](https://img.shields.io/badge/deploy-Render-purple.svg)
 [![docs](https://img.shields.io/badge/docs-OpenAPI-green.svg)](https://chat-gdatabot.onrender.com/docs)
