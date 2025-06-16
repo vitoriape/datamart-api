@@ -9,7 +9,6 @@ PowerBI Datamart API for consumption via ChatGPT (Actions) and general clients
 ![fastapi](https://img.shields.io/badge/FastAPI-0.100.0-pink.svg)
 ![deploy](https://img.shields.io/badge/deploy-Render-purple.svg)
 [![docs](https://img.shields.io/badge/docs-OpenAPI-green.svg)](https://chat-gdatabot.onrender.com/docs)
-![datasource](https://img.shields.io/badge/datasource-powerbi-yellow.svg)
 ![secure](https://img.shields.io/badge/security-token-important.svg)
 ![license](https://img.shields.io/badge/license-MIT-black.svg)
 </div>
@@ -31,10 +30,10 @@ PowerBI Datamart API for consumption via ChatGPT (Actions) and general clients
   - [🚀 Build and Run](#-build-and-run)
     - [🔧 Image Build:](#-image-build)
     - [▶️ Run with Docker:](#️-run-with-docker)
+    - [🌐 Access on Web:](#-access-on-web)
   - [⚙️ Server Settings](#️-server-settings)
     - [✅ Pre Requirements](#-pre-requirements)
     - [⚙️ Architecture](#️-architecture)
-    - [🚀 Run API Server with Univcorn](#-run-api-server-with-univcorn)
   - [🔎 Endpoints](#-endpoints)
   - [🚧 Versions](#-versions)
 <!--te-->
@@ -47,15 +46,11 @@ PowerBI Datamart API for consumption via ChatGPT (Actions) and general clients
 API developed for querying data from PowerBI Datamarts, allowing access to the data directly through ChatGPT (model selector 4.1 - custom model with actions) or other applications via REST endpoints.
 
 ### 💡Technologies
->**PowerBI `PPU minimum`**
-
->**Python 3.10**
-
->**Docker `Debian enviroment`**
-
->**Render > Starter Instance Type `512MB / 0.5 CPU`**
-
->**ChatGPT Pro**
+![Docker](https://img.shields.io/badge/Docker-Debian_enviroment-blue.svg)
+![PowerBI](https://img.shields.io/badge/PowerBI-PPU_minimum-yellow.svg)
+![Python](https://img.shields.io/badge/Python-3.10-navy.svg)
+![Render](https://img.shields.io/badge/Render-Starter_Instance_512_MB/0.5_CPU-purple.svg)
+![ChatGPT](https://img.shields.io/badge/ChatGPT-Pro-black.svg)
 
 
 >---
@@ -80,17 +75,22 @@ API developed for querying data from PowerBI Datamarts, allowing access to the d
 >---
 
 ## 🚀 Build and Run
+
 ### 🔧 Image Build:
 ```bash
 docker build -t fabric-connector .
 ```
 
 ### ▶️ Run with Docker:
-Test the application serverless with docker
-
 ```bash
 docker run --rm -p 8000:8000 --env-file secret.env fabric-connector
 ```
+
+### 🌐 Access on Web:
+```web
+http://localhost:8000/docs
+```
+
 
 >---
 
@@ -100,20 +100,15 @@ docker run --rm -p 8000:8000 --env-file secret.env fabric-connector
 - [x] File <code>secret.env</code> with access credencials
 
 ### ⚙️ Architecture
-<pre><code>/chat-databot
-├── Dockerfile
+<pre><code>/datamart-api
+├── dockerfile
+├── docker-compose.yml
 ├── requirements.txt
 ├── secret.env
 ├── datamart-api.py (API FastAPI)
 ├── openapi.yaml (for ChatGPT Actions)
 </code></pre>
 
-### 🚀 Run API Server with Univcorn
->**Run on terminal:**
-uvicorn teste:app --host 0.0.0.0 --port 8000
-
->**Acess on web:**
-http://localhost:8000/docs
 
 >---
 
