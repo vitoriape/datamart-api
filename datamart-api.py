@@ -1,8 +1,10 @@
 from msal import ConfidentialClientApplication
+from fastapi import FastAPI, Query, Header, HTTPException, Depends
 from fastapi.responses import FileResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from fastapi import FastAPI, Query, Header, HTTPException, Depends
+from typing import Annotated
 import pandas as pd
 import requests
 import uvicorn
@@ -17,14 +19,17 @@ load_dotenv(dotenv_path)
 
 # Client secret settings
 TOKEN = os.getenv("TOKEN")
+security = HTTPBearer()
 
-def verify_bearer_token(authorization: str = Header(..., description="Autenticação")):
+def verify_bearer_token(authorization: Annotated[str, Header(..., alias="Authorization", description="JWT Bearer token")]):
+
     if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid token format")
+        raise HTTPException(401, "Invalid token format")
     
-    token = authorization.replace("Bearer ", "")
+    token = authorization.removeprefix("Bearer ").strip()
+
     if token != TOKEN:
-        raise HTTPException(status_code=403, detail="Invalid token")
+        raise HTTPException(403, "Invalid token")
 
 
 # API settings
@@ -170,4 +175,4 @@ def query_datamart(dax_query: str):
         raise Exception(f"Error parsing response: {result}") from e
 
 if __name__ == "__main__":
-    uvicorn.run("chat-api:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8000)), reload=True)
+    uvicorn.run("datamart-api:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8000)), reload=True)
