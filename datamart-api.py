@@ -19,18 +19,12 @@ load_dotenv(dotenv_path)
 
 # Client secret settings
 TOKEN = os.getenv("TOKEN")
-security = HTTPBearer()
+bearer_scheme = HTTPBearer(auto_error=True)
 
-def verify_bearer_token(authorization: Annotated[str, Header(..., alias="Authorization", description="JWT Bearer token")]):
-
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(401, "Invalid token format")
+def verify(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
+    if creds.credentials != TOKEN:
+        raise HTTPException(status_code=403, detail="Invalid token")
     
-    token = authorization.removeprefix("Bearer ").strip()
-
-    if token != TOKEN:
-        raise HTTPException(403, "Invalid token")
-
 
 # API settings
 app = FastAPI(title="Datamart API", version="1.4")
@@ -51,7 +45,7 @@ def serve_ai_plugin():
 @app.get("/peoplecounting", 
          tags=["Fluxos Mall"], 
          summary="Consultar fluxo de pessoas", 
-         dependencies=[Depends(verify_bearer_token)])
+         dependencies=[Depends(verify)])
 
 def get_peoplecounting(
     start_date: str = Query(None, description="Data inicial no formato AAAA-MM-DD"),
@@ -80,7 +74,7 @@ def get_peoplecounting(
 @app.get("/parkingdata", 
          tags=["Fluxos Mall"], 
          summary="Consultar fluxo de veículos", 
-         dependencies=[Depends(verify_bearer_token)])
+         dependencies=[Depends(verify)])
 
 def get_parkingdata(
     start_date: str = Query(None, description="Data inicial no formato AAAA-MM-DD"),
@@ -111,7 +105,7 @@ def get_parkingdata(
 @app.get("/hotspotaccess", 
          tags=["Fluxos Mall"], 
          summary="Consultar acessos ao Hotspot de Internet",
-         dependencies=[Depends(verify_bearer_token)])
+         dependencies=[Depends(verify)])
 
 def get_hotspotaccess():
     dax_query = "EVALUATE db_hotspot_summary"
@@ -140,7 +134,7 @@ def query_datamart(dax_query: str):
     access_token = token_response.get('access_token')
 
     if not access_token:
-        raise Exception(f"❌ Could not obtain token: {token_response}")
+        raise Exception(f"Could not obtain token: {token_response}")
 
     url = f"https://api.powerbi.com/v1.0/myorg/groups/{workspace_id}/datasets/{dataset_id}/executeQueries"
 
