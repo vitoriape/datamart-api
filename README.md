@@ -13,8 +13,6 @@ PowerBI Datamart API for consumption via ChatGPT (Actions) and general clients
 ![license](https://img.shields.io/badge/license-MIT-black.svg)
 </div>
 
->---
-
 <details>
   <summary>[Open/Close] Table of Contents</summary>
 
@@ -40,7 +38,6 @@ PowerBI Datamart API for consumption via ChatGPT (Actions) and general clients
 
 </details>
 
->---
 
 ## 📄 Description
 API developed for querying data from PowerBI Datamarts, allowing access to the data directly through ChatGPT (model selector 4.1 - custom model with actions) or other applications via REST endpoints.
@@ -98,6 +95,15 @@ http://localhost:8000/docs
 ### ✅ Pre Requirements
 - [x] Docker installed
 - [x] File <code>secret.env</code> with access credencials
+
+```bash
+SQL_CLIENT_ID=
+SQL_CLIENT_SECRET=
+SQL_TENANT_ID=
+WORKSPACE_ID=
+DATASET_ID=
+TOKEN=
+```
 
 ### ⚙️ Architecture
 <pre><code>/datamart-api
