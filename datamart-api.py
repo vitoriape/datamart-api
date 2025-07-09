@@ -112,6 +112,17 @@ def get_hotspotaccess():
     df = query_datamart(dax_query)
     return df.to_dict(orient="records")
 
+#Endpoint: vendas data
+@app.get("/vendas",
+         tags=["Financeiro"],
+         summary="Consultar vendas",
+         dependencies=[Depends(verify)])
+
+def get_vendas():
+    dax_query= "EVALUATE db_vendas"
+    df = query_datamart(dax_query)
+    return df.to_dict(orient="records")
+
 
 # Datamart queries
 def query_datamart(dax_query: str):

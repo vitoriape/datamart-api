@@ -103,6 +103,25 @@ paths:
                 items:
                   $ref: "#/components/schemas/HotspotAccessItem"
 
+  /vendas:
+  get:
+    operationId: getVendas
+    tags:
+      - Financeiro
+    summary: Consultar dados de venda
+    security:
+      - TokenHeader: []
+    responses:
+      "200":
+        description: Lista de registros
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/VendasItem"
+
+
 components:
   securitySchemes:
     BearerAuth:
@@ -142,4 +161,25 @@ components:
         mac_address:
           type: string
         device_type:
+          type: string
+
+    VendasItem:
+      type: object
+      properties:
+        loja:
+          type: string
+        luc:
+          type: string
+        dt_referencia:
+          type: string
+          format: date
+        vl_vendido:
+          type: number
+        categoria:
+          type: string
+        segmento:
+          type: string
+        classificacao:
+          type: string
+        semana:
           type: string
