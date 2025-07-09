@@ -118,8 +118,28 @@ def get_hotspotaccess():
          summary="Consultar vendas",
          dependencies=[Depends(verify)])
 
-def get_vendas():
-    dax_query= "EVALUATE db_vendas"
+def get_vendas(
+    start_date: str = Query(None, description="Data inicial no formato AAAA-MM-DD"),
+    end_date: str = Query(None, description="Data final no formato AAAA-MM-DD"),
+    limit: int = Query(1000, description="Máximo de registros a retornar"),
+    last_date: str = Query(None, description="Data da última entrada do lote anterior (para paginação)")
+):
+    filters = []
+
+    if start_date:
+        filters.append(f'db_vendas[dt_referencia] >= DATE({start_date.replace("-", ", ")})')
+    if end_date:
+        filters.append(f'db_vendas[dt_referencia] <= DATE({end_date.replace("-", ", ")})')
+    if last_date:
+        filters.append(f'db_vendas[dt_referencia] > DATE({last_date.replace("-", ", ")})')
+
+    filter_clause = f"FILTER(db_vendas, {' && '.join(filters)})" if filters else "db_vendas"
+
+    dax_query = f"""
+    EVALUATE
+    TOPN({limit}, {filter_clause}, db_vendas[dt_referencia], ASC)
+    """
+
     df = query_datamart(dax_query)
     return df.to_dict(orient="records")
 

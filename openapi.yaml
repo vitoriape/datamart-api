@@ -104,22 +104,51 @@ paths:
                   $ref: "#/components/schemas/HotspotAccessItem"
 
   /vendas:
-  get:
-    operationId: getVendas
-    tags:
-      - Financeiro
-    summary: Consultar dados de venda
-    security:
-      - TokenHeader: []
-    responses:
-      "200":
-        description: Lista de registros
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/VendasItem"
+    get:
+      operationId: getVendas
+      tags:
+        - Financeiro
+      summary: Consultar dados de venda
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          required: false
+          description: Data inicial no formato AAAA-MM-DD
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: false
+          description: Data final no formato AAAA-MM-DD
+          schema:
+            type: string
+            format: date
+        - name: last_date
+          in: query
+          required: false
+          description: Data da última entrada do lote anterior (para paginação)
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          required: false
+          description: Máximo de registros a retornar
+          schema:
+            type: integer
+            default: 1000
+      responses:
+        "200":
+          description: Lista de registros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VendasItem"
 
 
 components:
