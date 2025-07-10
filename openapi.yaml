@@ -11,8 +11,8 @@ paths:
     get:
       operationId: getPeopleCounting
       tags:
-        - Fluxos Mall
-      summary: Consultar dados de contagem de pessoas
+        - Shopping
+      summary: Consulta o fluxo sumarizado de acesso de pessoas ao shopping
       parameters:
         - name: start_date
           in: query
@@ -43,7 +43,7 @@ paths:
       operationId: getParkingData
       tags:
         - Fluxos Mall
-      summary: Consultar dados de estacionamento
+      summary: Consulta o fluxo sumarizado de acesso de veículos ao shopping
       security:
         - TokenHeader: []
       parameters:
@@ -89,10 +89,36 @@ paths:
     get:
       operationId: getHotspotAccess
       tags:
-        - Fluxos Mall
-      summary: Consultar dados de acesso via hotspot
+        - Shopping
+      summary: Consulta dados sumarizados de acesso ao hotspot de wi-fi
       security:
         - TokenHeader: []
+      parameters:
+        - name: start_date
+          in: query
+          required: false
+          description: Data inicial no formato AAAA-MM:Semana X
+          schema:
+            type: string
+        - name: end_date
+          in: query
+          required: false
+          description: Data final no formato AAAA-MM:Semana N
+          schema:
+            type: string
+        - name: last_date
+          in: query
+          required: false
+          description: Data da última entrada do lote anterior (formato AAAA-MM:Semana N)
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: Máximo de registros a retornar
+          schema:
+            type: integer
+            default: 1000
       responses:
         "200":
           description: Lista de registros

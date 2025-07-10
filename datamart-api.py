@@ -27,7 +27,7 @@ def verify(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
     
 
 # API settings
-app = FastAPI(title="Datamart API", version="1.4")
+app = FastAPI(title="CECILia API", version="1.4")
 
 @app.get("/openapi.yaml", include_in_schema=False)
 def get_openapi():
@@ -43,13 +43,15 @@ def serve_ai_plugin():
 
 # Endpoint: people couting data
 @app.get("/peoplecounting", 
-         tags=["Fluxos Mall"], 
-         summary="Consultar fluxo de pessoas", 
+         tags=["Shopping"], 
+         summary="Consulta o fluxo sumarizado de acesso de pessoas ao shopping", 
          dependencies=[Depends(verify)])
 
 def get_peoplecounting(
     start_date: str = Query(None, description="Data inicial no formato AAAA-MM-DD"),
-    end_date: str = Query(None, description="Data final no formato AAAA-MM-DD")
+    end_date: str = Query(None, description="Data final no formato AAAA-MM-DD"),
+    limit: int = Query(1000, description="Máximo de registros a retornar"),
+    last_date: str = Query(None, description="Data da última entrada do lote anterior (para paginação)")
 ):
     filters = []
 
@@ -72,8 +74,8 @@ def get_peoplecounting(
 
 # Endpoint: parking data
 @app.get("/parkingdata", 
-         tags=["Fluxos Mall"], 
-         summary="Consultar fluxo de veículos", 
+         tags=["Shopping"], 
+         summary="Consulta o fluxo sumarizado de acesso de veículos ao shopping", 
          dependencies=[Depends(verify)])
 
 def get_parkingdata(
@@ -103,18 +105,38 @@ def get_parkingdata(
 
 # Endpoint: hotspot data
 @app.get("/hotspotaccess", 
-         tags=["Fluxos Mall"], 
-         summary="Consultar acessos ao Hotspot de Internet",
+         tags=["Shopping"], 
+         summary="Consulta acessos sumarizados ao hotspot de wi-fi",
          dependencies=[Depends(verify)])
 
-def get_hotspotaccess():
-    dax_query = "EVALUATE db_hotspot_summary"
+def get_hotspotaccess(
+    start_date: str = Query(None, description="Data inicial no formato AAAA-MM:Semana N"),
+    end_date: str = Query(None, description="Data final no formato AAAA-MM:Semana N"),
+    limit: int = Query(1000, description="Máximo de registros a retornar"),
+    last_date: str = Query(None, description="Data da última entrada do lote anterior (para paginação)")
+):
+    filters = []
+
+    if start_date:
+        filters.append(f'db_hotspot_summary[dt_periodo] >= "{start_date}"')
+    if end_date:
+        filters.append(f'db_hotspot_summary[dt_periodo] <= "{end_date}"')
+    if last_date:
+        filters.append(f'db_hotspot_summary[dt_periodo] > "{last_date}"')
+
+    filter_clause = f"FILTER(db_hotspot_summary, {' && '.join(filters)})" if filters else "db_hotspot_summary"
+
+    dax_query = f"""
+    EVALUATE
+    TOPN({limit}, {filter_clause}, db_hotspot_summary[dt_periodo], ASC)
+    """
+
     df = query_datamart(dax_query)
     return df.to_dict(orient="records")
 
 #Endpoint: vendas data
 @app.get("/vendas",
-         tags=["Financeiro"],
+         tags=["Shopping"],
          summary="Consultar vendas",
          dependencies=[Depends(verify)])
 
