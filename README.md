@@ -1,4 +1,4 @@
-# Datamart API <img src="https://snipboard.io/rlh6gz.jpg" width="10%" height="10%" align="right" valign="middle"/>
+# Datamart API <img src="https://snipboard.io/rlh6gz.jpg" width="10%" height="00%" align="right" valign="middle"/>
 PowerBI Datamart API for consumption via ChatGPT (Actions) and general clients
 
 <div align="center">
@@ -40,7 +40,7 @@ PowerBI Datamart API for consumption via ChatGPT (Actions) and general clients
 
 
 ## 📄 Description
-API developed for querying data from PowerBI Datamarts, allowing access to the data directly through ChatGPT (model selector 4.1 - custom model with actions) or other applications via REST endpoints.
+API developed for querying data from PowerBI Datamarts, allowing access to the data directly through ChatGPT (model selector 4.0 - custom model with actions) or other applications via REST endpoints.
 
 ### 💡Technologies
 ![Docker](https://img.shields.io/badge/Docker-Debian_enviroment-blue.svg)
@@ -173,7 +173,7 @@ Increase security adding an API secret – Upgrade Render instance type – Adde
 ![status](https://img.shields.io/badge/status-in%20development-orange.svg)
 ![date](https://img.shields.io/badge/preview-2025/06/20-black.svg)
 
-Available endpoints expansion  
+Available endpoints expansion and layout change
 </details>
 
 ---
