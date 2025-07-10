@@ -125,6 +125,7 @@ TOKEN=
 | GET    | `/peoplecounting` | Dados da tabela db\_peoplecounting      |
 | GET    | `/parkingdata`    | Dados da tabela db\_parking\_summary    |
 | GET    | `/hotspotaccess`  | Dados da tabela db\_hotspot\_summary    |
+| GET    | `/vendas`         | Dados da tabela db\_vendas              |
 
 >---
 
