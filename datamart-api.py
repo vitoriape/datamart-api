@@ -207,40 +207,44 @@ def registrar_receita(
     creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)
 ):
     verify(creds)
+
+    try:
+        conn = get_sqlserver_connection()
+        cursor = conn.cursor()
     
-    conn = get_sqlserver_connection()
-    cursor = conn.cursor()
+        query = """
+        INSERT INTO dbo.receitasienge (
+            dt_vencimento, cliente, documento, titulo, parcela, tc, unidade,
+            vl_original, dt_calculo, sa_atual, dias, acrescimo, desconto, vl_total
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        
+        valores = (
+            dados.dt_vencimento,
+            dados.cliente,
+            dados.documento,
+            dados.titulo,
+            dados.parcela,
+            dados.tc,
+            dados.unidade,
+            dados.vl_original,
+            dados.dt_calculo,
+            dados.sa_atual,
+            dados.acrescimo,
+            dados.desconto,
+            dados.vl_total,
+        )
+        
+        cursor.execute(query, valores)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        return {"mensagem": "Registro inserido com sucesso ✅"}
     
-    query = """
-    INSERT INTO dbo.receitasienge (
-        dt_vencimento, cliente, documento, titulo, parcela, tc, unidade,
-        vl_original, dt_calculo, sa_atual, dias, acrescimo, desconto, vl_total
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """
-    
-    valores = (
-        dados.dt_vencimento,
-        dados.cliente,
-        dados.documento,
-        dados.titulo,
-        dados.parcela,
-        dados.tc,
-        dados.unidade,
-        dados.vl_original,
-        dados.dt_calculo,
-        dados.sa_atual,
-        dados.acrescimo,
-        dados.desconto,
-        dados.vl_total,
-    )
-    
-    cursor.execute(query, valores)
-    conn.commit()
-    cursor.close()
-    conn.close()
-    
-    return {"mensagem": "Registro inserido com sucesso ✅"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Datamart queries
