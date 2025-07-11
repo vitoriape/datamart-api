@@ -188,7 +188,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/HotspotAccessInput'
+              $ref: '#/components/schemas/HotspotAccessInputItem'
       responses:
         '200':
           description: Registros inseridos com sucesso na tabela hotspotaccess  
