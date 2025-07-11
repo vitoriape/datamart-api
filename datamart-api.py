@@ -234,11 +234,8 @@ def registrar_receita(
         dados.vl_original,
         dados.dt_calculo,
         dados.sa_atual,
-        dados.dias,
         dados.acrescimo,
         dados.desconto,
-        dados.seguro,
-        dados.tx_adm,
         dados.vl_total,
     )
     

@@ -292,18 +292,10 @@ components:
         sa_atual:
           type: number
           format: float
-        dias:
-          type: integer
         acrescimo:
           type: number
           format: float
         desconto:
-          type: number
-          format: float
-        seguro:
-          type: number
-          format: float
-        tx_adm:
           type: number
           format: float
         vl_total:
