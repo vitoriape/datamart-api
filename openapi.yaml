@@ -176,6 +176,31 @@ paths:
                 items:
                   $ref: "#/components/schemas/VendasItem"
 
+  /receitasienge:
+    post:
+      operationId: registrarReceita
+      tags:
+        - Bairro Harmonia
+      summary: Insere dados na tabela receitasienge
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReceitaSiengeInput"
+      responses:
+        "200":
+          description: Registro inserido com sucesso na tabela receitasienge
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+
 
 components:
   securitySchemes:
@@ -185,6 +210,7 @@ components:
       bearerFormat: JWT
 
   schemas:
+
     PeopleCountingItem:
       type: object
       properties:
@@ -238,3 +264,48 @@ components:
           type: string
         semana:
           type: string
+
+    ReceitaSiengeInput:
+      type: object
+      properties:
+        dt_vencimento:
+          type: string
+          format: date
+        cliente:
+          type: string
+        documento:
+          type: string
+        titulo:
+          type: integer
+        parcela:
+          type: string
+        tc:
+          type: string
+        unidade:
+          type: string
+        vl_original:
+          type: number
+          format: float
+        dt_calculo:
+          type: string
+          format: date
+        sa_atual:
+          type: number
+          format: float
+        dias:
+          type: integer
+        acrescimo:
+          type: number
+          format: float
+        desconto:
+          type: number
+          format: float
+        seguro:
+          type: number
+          format: float
+        tx_adm:
+          type: number
+          format: float
+        vl_total:
+          type: number
+          format: float

@@ -10,6 +10,13 @@ import requests
 import uvicorn
 import os
 
+from pydantic import BaseModel
+from typing import Optional
+from datetime import date
+from decimal import Decimal
+import pyodbc
+
+
 # Environment variables
 env_dir = os.path.dirname(os.path.abspath(__file__))
 env_name = 'secret.env'
@@ -164,6 +171,83 @@ def get_vendas(
 
     df = query_datamart(dax_query)
     return df.to_dict(orient="records")
+
+
+# Endpoint receitasienge base model
+class ReceitaSiengeInput(BaseModel):
+    dt_vencimento: Optional[date] = None
+    cliente: Optional[str] = None
+    documento: Optional[str] = None
+    titulo: Optional[int] = None
+    parcela: Optional[str] = None
+    tc: Optional[str] = None
+    unidade: Optional[str] = None
+    vl_original: Optional[Decimal] = None
+    dt_calculo: Optional[date] = None
+    sa_atual: Optional[Decimal] = None
+    dias: Optional[int] = None
+    acrescimo: Optional[Decimal] = None
+    desconto: Optional[Decimal] = None
+    seguro: Optional[Decimal] = None
+    tx_adm: Optional[Decimal] = None
+    vl_total: Optional[Decimal] = None
+
+def get_sqlserver_connection():
+    conn_str = (
+        f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+        f"SERVER={os.getenv('SQL_SERVER_HOST')};"
+        f"DATABASE={os.getenv('SQL_SERVER_DB')};"
+        f"UID={os.getenv('SQL_SERVER_USER')};"
+        f"PWD={os.getenv('SQL_SERVER_PASSWORD')};"
+        f"TrustServerCertificate=yes;"
+    )
+    return pyodbc.connect(conn_str)
+
+# Endpoint: receitasienge input
+@app.post("/receitasienge", tags=["Bairro Harmonia"], summary="Insere dados na tabela receitasienge")
+def registrar_receita(
+    dados: ReceitaSiengeInput,
+    creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)
+):
+    verify(creds)
+    
+    conn = get_sqlserver_connection()
+    cursor = conn.cursor()
+    
+    query = """
+    INSERT INTO dbo.receitasienge (
+        dt_vencimento, cliente, documento, titulo, parcela, tc, unidade,
+        vl_original, dt_calculo, sa_atual, dias, acrescimo, desconto,
+        seguro, tx_adm, vl_total
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    
+    valores = (
+        dados.dt_vencimento,
+        dados.cliente,
+        dados.documento,
+        dados.titulo,
+        dados.parcela,
+        dados.tc,
+        dados.unidade,
+        dados.vl_original,
+        dados.dt_calculo,
+        dados.sa_atual,
+        dados.dias,
+        dados.acrescimo,
+        dados.desconto,
+        dados.seguro,
+        dados.tx_adm,
+        dados.vl_total,
+    )
+    
+    cursor.execute(query, valores)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    return {"mensagem": "Registro inserido com sucesso ✅"}
 
 
 # Datamart queries
