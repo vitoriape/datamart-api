@@ -185,11 +185,8 @@ class ReceitaSiengeInput(BaseModel):
     vl_original: Optional[Decimal] = None
     dt_calculo: Optional[date] = None
     sa_atual: Optional[Decimal] = None
-    dias: Optional[int] = None
     acrescimo: Optional[Decimal] = None
     desconto: Optional[Decimal] = None
-    seguro: Optional[Decimal] = None
-    tx_adm: Optional[Decimal] = None
     vl_total: Optional[Decimal] = None
 
 def get_sqlserver_connection():
@@ -217,8 +214,7 @@ def registrar_receita(
     query = """
     INSERT INTO dbo.receitasienge (
         dt_vencimento, cliente, documento, titulo, parcela, tc, unidade,
-        vl_original, dt_calculo, sa_atual, dias, acrescimo, desconto,
-        seguro, tx_adm, vl_total
+        vl_original, dt_calculo, sa_atual, dias, acrescimo, desconto, vl_total
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
