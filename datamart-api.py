@@ -5,16 +5,15 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from typing import Annotated
+from pydantic import BaseModel
+from typing import Optional
+from datetime import date, datetime
+from decimal import Decimal
 import pandas as pd
 import requests
 import uvicorn
-import os
-
-from pydantic import BaseModel
-from typing import Optional
-from datetime import date
-from decimal import Decimal
 import pyodbc
+import os
 
 
 # Environment variables
@@ -173,22 +172,83 @@ def get_vendas(
     return df.to_dict(orient="records")
 
 
-# Endpoint receitasienge base model
-class ReceitaSiengeInput(BaseModel):
-    dt_vencimento: Optional[date] = None
-    cliente: Optional[str] = None
-    documento: Optional[str] = None
-    titulo: Optional[int] = None
-    parcela: Optional[str] = None
-    tc: Optional[str] = None
-    unidade: Optional[str] = None
-    vl_original: Optional[Decimal] = None
-    dt_calculo: Optional[date] = None
-    sa_atual: Optional[Decimal] = None
-    acrescimo: Optional[Decimal] = None
-    desconto: Optional[Decimal] = None
-    vl_total: Optional[Decimal] = None
+# Endpoint: hotspotaccess input
+class HotspotAccessInput(BaseModel):
+    id: Optional[int] = None
+    dt_acesso: Optional[date] = None
+    hr_acesso: Optional[str] = None 
+    nome: Optional[str] = None
+    email: Optional[str] = None
+    sexo: Optional[str] = None
+    dt_nascimento: Optional[date] = None
+    telefone: Optional[str] = None
+    ed_mac: Optional[str] = None
+    ip_local: Optional[str] = None
+    tp_aparelho: Optional[str] = None
+    grupo: Optional[str] = None
+    lugar: Optional[str] = None
+    campanha: Optional[str] = None
+    cep: Optional[str] = None
+    cpf: Optional[str] = None
+    cidade: Optional[str] = None
+    bairro: Optional[str] = None
+    ar_influencia: Optional[str] = None
+    uf: Optional[str] = None
+    ac_datetime: Optional[datetime] = None
 
+
+@app.post("/hotspotaccess-input", tags=["Shopping"], summary="Insere dados na tabela hotspotaccess")
+def registrar_hotspot(
+    dados: HotspotAccessInput,
+    creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)
+):
+    verify(creds)
+
+    conn = get_sqlserver_connection()
+    cursor = conn.cursor()
+
+    query = """
+    INSERT INTO dbo.hotspotaccess (
+        id, dt_acesso, hr_acesso, nome, email, sexo, dt_nascimento, telefone,
+        ed_mac, ip_local, tp_aparelho, grupo, lugar, campanha, cep, cpf,
+        cidade, bairro, ar_influencia, uf, ac_datetime
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+
+    valores = (
+        dados.id,
+        dados.dt_acesso,
+        dados.hr_acesso,
+        dados.nome,
+        dados.email,
+        dados.sexo,
+        dados.dt_nascimento,
+        dados.telefone,
+        dados.ed_mac,
+        dados.ip_local,
+        dados.tp_aparelho,
+        dados.grupo,
+        dados.lugar,
+        dados.campanha,
+        dados.cep,
+        dados.cpf,
+        dados.cidade,
+        dados.bairro,
+        dados.ar_influencia,
+        dados.uf,
+        dados.ac_datetime,
+    )
+
+    cursor.execute(query, valores)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return {"mensagem": "Registros inseridos com sucesso na tabela hotspotaccess ✅"}
+
+
+# SQL Server connection configs
 def get_sqlserver_connection():
     conn_str = (
         f"DRIVER={{ODBC Driver 17 for SQL Server}};"
@@ -199,52 +259,6 @@ def get_sqlserver_connection():
         f"TrustServerCertificate=yes;"
     )
     return pyodbc.connect(conn_str)
-
-# Endpoint: receitasienge input
-@app.post("/receitasienge", tags=["Bairro Harmonia"], summary="Insere dados na tabela receitasienge")
-def registrar_receita(
-    dados: ReceitaSiengeInput,
-    creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)
-):
-    verify(creds)
-
-    try:
-        conn = get_sqlserver_connection()
-        cursor = conn.cursor()
-    
-        query = """
-        INSERT INTO dbo.receitasienge (
-            dt_vencimento, cliente, documento, titulo, parcela, tc, unidade,
-            vl_original, dt_calculo, sa_atual, dias, acrescimo, desconto, vl_total
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """
-        
-        valores = (
-            dados.dt_vencimento,
-            dados.cliente,
-            dados.documento,
-            dados.titulo,
-            dados.parcela,
-            dados.tc,
-            dados.unidade,
-            dados.vl_original,
-            dados.dt_calculo,
-            dados.sa_atual,
-            dados.acrescimo,
-            dados.desconto,
-            dados.vl_total,
-        )
-        
-        cursor.execute(query, valores)
-        conn.commit()
-        cursor.close()
-        conn.close()
-        
-        return {"mensagem": "Registro inserido com sucesso ✅"}
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Datamart queries

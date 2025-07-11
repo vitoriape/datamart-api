@@ -176,23 +176,22 @@ paths:
                 items:
                   $ref: "#/components/schemas/VendasItem"
 
-  /receitasienge:
+  /hotspotaccess-input:
     post:
-      operationId: registrarReceita
       tags:
-        - Bairro Harmonia
-      summary: Insere dados na tabela receitasienge
+        - Shopping
+      summary: Insere dados na tabela hotspotaccess
       security:
-        - BearerAuth: []
+        - HTTPBearer: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ReceitaSiengeInput"
+              $ref: '#/components/schemas/HotspotAccessInput'
       responses:
-        "200":
-          description: Registro inserido com sucesso na tabela receitasienge
+        '200':
+          description: Registros inseridos com sucesso na tabela hotspotaccess  
           content:
             application/json:
               schema:
@@ -265,39 +264,52 @@ components:
         semana:
           type: string
 
-    ReceitaSiengeInput:
+    HotspotAccessInputItem:
       type: object
       properties:
-        dt_vencimento:
-          type: string
-          format: date
-        cliente:
-          type: string
-        documento:
-          type: string
-        titulo:
+        id:
           type: integer
-        parcela:
-          type: string
-        tc:
-          type: string
-        unidade:
-          type: string
-        vl_original:
-          type: number
-          format: float
-        dt_calculo:
+        dt_acesso:
           type: string
           format: date
-        sa_atual:
-          type: number
-          format: float
-        acrescimo:
-          type: number
-          format: float
-        desconto:
-          type: number
-          format: float
-        vl_total:
-          type: number
-          format: float
+        hr_acesso:
+          type: string
+          example: "15:30:00"
+        nome:
+          type: string
+        email:
+          type: string
+        sexo:
+          type: string
+        dt_nascimento:
+          type: string
+          format: date
+        telefone:
+          type: string
+        ed_mac:
+          type: string
+        ip_local:
+          type: string
+        tp_aparelho:
+          type: string
+        grupo:
+          type: string
+        lugar:
+          type: string
+        campanha:
+          type: string
+        cep:
+          type: string
+        cpf:
+          type: string
+        cidade:
+          type: string
+        bairro:
+          type: string
+        ar_influencia:
+          type: string
+        uf:
+          type: string
+        ac_datetime:
+          type: string
+          format: date-time
